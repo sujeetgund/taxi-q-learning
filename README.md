@@ -5,6 +5,7 @@ An end-to-end Reinforcement Learning implementation of model-free tabular **Q-Le
 ---
 
 ## Table of Contents
+
 1. [Environment & Problem Formulation](#environment--problem-formulation)
 2. [Reinforcement Learning Methodology](#reinforcement-learning-methodology)
 3. [Repository Structure](#repository-structure)
@@ -30,14 +31,18 @@ The **Taxi-v4** task represents a classic discrete Markov Decision Process (MDP)
 ```
 
 ### State Space ($\mathcal{S}$)
+
 The environment consists of a $5 \times 5$ grid containing 4 fixed passenger/destination locations: **R**ed, **G**reen, **Y**ellow, and **B**lue.
 Total discrete states: **500**
+
 - 25 possible taxi positions ($5 \times 5$ grid coordinates).
 - 5 possible passenger locations (4 designated locations + 1 inside the taxi).
 - 4 designated passenger destination locations.
 
 ### Action Space ($\mathcal{A}$)
+
 The agent can execute **6 discrete actions**:
+
 - `0`: Move South (`down`)
 - `1`: Move North (`up`)
 - `2`: Move East (`right`)
@@ -46,6 +51,7 @@ The agent can execute **6 discrete actions**:
 - `5`: Drop off passenger (`dropoff`)
 
 ### Reward Function ($\mathcal{R}$)
+
 - **$-1$ per step**: Encourages the agent to reach the target location in the shortest path.
 - **$+20$ on success**: Awarded upon dropping off the passenger at the correct destination.
 - **$-10$ penalty**: Applied when executing illegal pickup or dropoff actions.
@@ -55,22 +61,25 @@ The agent can execute **6 discrete actions**:
 ## Reinforcement Learning Methodology
 
 ### Q-Learning Algorithm
+
 Q-Learning is an **off-policy**, **model-free** temporal difference (TD) control algorithm. It maintains a state-action lookup table $Q(s, a)$ and updates entries using the Bellman Optimality Equation:
 
 $$Q(s, a) \leftarrow (1 - \alpha) Q(s, a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') \right]$$
 
 ### Policy ($\epsilon$-Greedy)
+
 To balance exploration of unvisited state-action pairs and exploitation of learned Q-values:
 
 $$\pi(a|s) = \begin{cases} \text{argmax}_a Q(s, a), & \text{with probability } 1 - \epsilon \\ \text{random action from } \mathcal{A}, & \text{with probability } \epsilon \end{cases}$$
 
 ### Selected Hyperparameters
-| Parameter | Symbol | Value | Rationale |
-| :--- | :---: | :---: | :--- |
-| Learning Rate | $\alpha$ | `0.1` | Ensures stable temporal difference updates without overshooting |
-| Discount Factor | $\gamma$ | `0.6` | Balances immediate step penalties with future dropoff rewards |
-| Exploration Rate | $\epsilon$ | `0.1` | Maintains a 10% random action probability during training |
-| Total Episodes | $N$ | `50,000` | Ensures full convergence across all 500 discrete states |
+
+| Parameter        |   Symbol   |  Value   | Rationale                                                       |
+| :--------------- | :--------: | :------: | :-------------------------------------------------------------- |
+| Learning Rate    |  $\alpha$  |  `0.1`   | Ensures stable temporal difference updates without overshooting |
+| Discount Factor  |  $\gamma$  |  `0.6`   | Balances immediate step penalties with future dropoff rewards   |
+| Exploration Rate | $\epsilon$ |  `0.1`   | Maintains a 10% random action probability during training       |
+| Total Episodes   |    $N$     | `50,000` | Ensures full convergence across all 500 discrete states         |
 
 ---
 
@@ -95,13 +104,17 @@ $$\pi(a|s) = \begin{cases} \text{argmax}_a Q(s, a), & \text{with probability } 1
 This repository uses [`uv`](https://github.com/astral-sh/uv) for fast, isolated Python package management.
 
 ### Prerequisites
+
 Ensure `uv` is installed:
+
 ```bash
 uv --version
 ```
 
 ### Environment Initialization
+
 Initialize the virtual environment and install dependencies:
+
 ```bash
 uv venv
 uv sync
@@ -127,12 +140,13 @@ uv run jupyter notebook notebooks/taxi_q_learning.ipynb
 
 ### Baseline vs Q-Learned Policy Comparison
 
-| Agent Policy | Avg Timesteps / Episode | Avg Penalties / Episode | Success Rate |
-| :--- | :---: | :---: | :---: |
-| **Random Baseline Policy** | ~2,450+ (times out) | ~790+ | < 5% |
-| **Trained Q-Learning Policy** | **13.12** | **0.00** | **100%** |
+| Agent Policy                  | Avg Timesteps / Episode | Avg Penalties / Episode | Success Rate |
+| :---------------------------- | :---------------------: | :---------------------: | :----------: |
+| **Random Baseline Policy**    |   ~2,450+ (times out)   |          ~790+          |     < 5%     |
+| **Trained Q-Learning Policy** |        **13.12**        |        **0.00**         |   **100%**   |
 
 ### Key Findings & Metrics
+
 1. **Zero Penalties**: Upon convergence, the Q-learning agent completely eliminates illegal pickup/dropoff penalties ($-10$).
 2. **Optimal Trajectories**: Average timesteps per episode drop from >2,000 to **13.12**, matching the theoretical shortest path for random taxi-passenger-destination configurations.
 3. **Robustness**: The policy achieves a 100% success rate across 100 evaluation episodes without exploration ($\epsilon = 0$).
@@ -140,4 +154,5 @@ uv run jupyter notebook notebooks/taxi_q_learning.ipynb
 ---
 
 ## License
+
 MIT License.
