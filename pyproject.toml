@@ -1,0 +1,13 @@
+[project]
+name = "taxi-rl-qlearning"
+version = "0.1.0"
+description = "Autonomous Taxi Navigation in Gymnasium using Q-Learning"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gymnasium>=1.0.0",
+    "numpy>=1.26.0",
+    "matplotlib>=3.8.0",
+    "jupyter>=1.0.0",
+    "notebook>=7.0.0",
+]
